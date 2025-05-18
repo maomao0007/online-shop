@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ChevronsUp} from "lucide-react"
+import { ChevronsUp } from "lucide-react"
 
 function ScrollButton() {
   const [showButton, setShowButton] = useState(false);

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useMemo } from "react";
 import {
   getCart,
   updateCartItem,
@@ -31,8 +31,6 @@ function Cart() {
   const handleMinQ = async (cartItemId) => {
     const item = cart.find((item) => item.id === cartItemId);
     if (!item || item.quantity <= 1) return;
-
-    if (item.quantity <= 1) return;
 
     try {
       await updateCartItem(cartItemId, item.quantity - 1);
@@ -91,6 +89,18 @@ function Cart() {
       handleError(error, showMessage, navigate);
     }
   }
+
+  const totalQuantity = useMemo(() => {
+    return cart.reduce((acc, item) => acc + item.quantity, 0);
+  }, [cart]);
+
+  const totalAmount = useMemo(() => {
+    return cart.reduce(
+      (acc, item) => acc + item.Product.price * item.quantity,
+      0
+    );
+  }, [cart]);
+
 
   return (
     <div className="container py-5">
@@ -176,21 +186,11 @@ function Cart() {
                 <h4 className="mb-4 text-center fw-bold">Summary</h4>
                 <div className="d-flex justify-content-between fw-bold fs-6 mb-2 mt-2">
                   <span>Quantity:</span>
-                  <span>
-                    {cart.reduce((acc, item) => acc + item.quantity, 0)}
-                  </span>
+                  <span>{totalQuantity}</span>
                 </div>
                 <div className="d-flex justify-content-between fw-bold fs-6 mt-4">
                   <span>Total:</span>
-                  <span>
-                    NT$
-                    {cart
-                      .reduce(
-                        (acc, item) => acc + item.Product.price * item.quantity,
-                        0
-                      )
-                      .toLocaleString()}
-                  </span>
+                  <span>NT${totalAmount.toLocaleString()}</span>
                 </div>
                 <button
                   type="button"
